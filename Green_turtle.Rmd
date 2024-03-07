@@ -1,0 +1,63 @@
+---
+title: "Green sea turtle analysis "
+output: html_document
+date: "2024-03-07"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+load all the necessary packages
+```{r}
+library(tidyverse)
+library(janitor)
+library(dplyr)
+library(naniar)
+```
+
+load the dataset and clean names
+```{r}
+green_turtle <- read_csv("data/Green_sea_turtle_age_growth.csv") %>% clean_names()
+```
+
+take a look at the dataset
+```{r}
+glimpse(green_turtle)
+```
+
+check if there are any NAs
+```{r}
+miss_var_summary(green_turtle)
+```
+
+produce a summary of average straightline carapace length of turtle 
+```{r}
+green_turtle %>% 
+  group_by(sex) %>% 
+  filter(straightline_carapace_length != "NA") %>% 
+  summarize((avg_length = mean(straightline_carapace_length)))
+```
+
+produce a graph on the difference in straightline carapace length between male and female
+```{r}
+green_turtle %>%
+  group_by(sex) %>%
+  filter(straightline_carapace_length != "NA") %>% 
+  summarize(avg_length = mean(straightline_carapace_length)) %>%
+  ggplot(aes(x = sex, y = avg_length, fill = sex)) +
+  geom_col(color = "black", fill = "darkgreen") +
+  theme_light()+
+  labs(title = "Average Straightline Carapace Length by Sex",
+       x = "Sex",
+       y = "Average Length",
+       fill = "Sex")
+```
+
+compare group rate by year
+```{r}
+green_turtle %>% 
+  group_by(year) %>% 
+  
+```
+
