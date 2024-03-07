@@ -34,3 +34,45 @@ glimpse(florida_stranding)
 florida_stranding %>% 
   naniar::miss_var_summary()
 ```
+# Change x and y to long and lat
+```{r}
+florida_stranding <- florida_stranding %>% 
+  rename(longitude = x, latitude = y)
+```
+
+
+## Build a map
+
+# Install and load the `ggmap` package  
+```{r message=FALSE, warning=FALSE}
+#install.packages("ggmap")
+library(ggmap)
+```
+
+#API Key
+```{r}
+register_stadiamaps("cf7e4fa6-eb1a-4afb-a4a8-6d5d47e2a05a", write = FALSE)
+```
+
+```{r}
+florida_stranding %>% 
+  #y=latitude, x=longitude
+  select(longitude, latitude) %>% 
+  summary()
+```
+
+```{r}
+lat_florida <- c(24.23, 30.72)
+long_florida <- c(-87.52, -79.49)
+bbox_florida <- make_bbox(long_florida, lat_florida, f = 0.03) #f is the fraction of the bounding box to add to the range
+```
+
+```{r}
+map_florida <- get_stadiamap(bbox_florida, maptype = "stamen_terrain", zoom=7)
+```
+
+```{r}
+ggmap(map_florida) + 
+  geom_point(data = florida_stranding, aes(longitude, latitude, color = commonname), size=0.3) +
+  labs(x= "Longitude", y= "Latitude", title="Sea Turtle Stranding Locations in Florida by Species")
+```
