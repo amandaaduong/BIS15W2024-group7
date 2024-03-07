@@ -1,0 +1,60 @@
+---
+title: "adult loggerhead turtles"
+author: "Amanda Duong"
+date: "2024-03-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Load the libraries
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("janitor")
+library("naniar")
+library("ggplot2")
+library("dplyr")
+```
+
+# clean the data first
+```{r}
+loggerheads <- read_csv("data/Adult_loggerhead_turtle.csv") %>% clean_names()
+```
+```{r}
+names(loggerheads)
+```
+# Graph of Average Growth over Time Per State
+```{r}
+loggerheads %>%
+  group_by(state) %>% # first get list of states in data
+  summarise(mean_state = mean(state))
+```
+```{r}
+
+```
+
+```{r}
+loggerheads$year <- as.factor(loggerheads$year)
+
+# Creating a line plot of average growth over time for all states
+loggerheads %>%
+  filter(!is.na(growth)) %>%
+  group_by(state, year) %>%
+  summarise(mean_growth = mean(growth, na.rm = TRUE)) %>%
+  ggplot(aes(x = year, y = mean_growth, color = state)) +
+  geom_line() +
+  labs(title = "Mean Growth for Each State Over the Years",
+       x = "Year", y = "Mean Growth Rate") +
+  theme_minimal()
+```
+# Do males or females tend to grow more over time? (Removing unknowns)
+```{r}
+
+```
+# Which state has the highest growth rate over time?
+```{r}
+
+```
+# Make a map of loggerhead turtle distribution
+
