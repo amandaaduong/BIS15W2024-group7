@@ -1,0 +1,36 @@
+---
+title: "Sea Turtle Strandings Florida"
+author: "Jasmine Hsiao"
+date: "2024-03-07"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load the libraries
+```{r message=FALSE, warning=FALSE}
+library("tidyverse")
+library("janitor")
+library("naniar")
+```
+
+## Load the data
+```{r message=FALSE, warning=FALSE}
+florida_stranding <- read_csv("data/Sea_Turtle_Strandings_Florida.csv") %>% clean_names()
+```
+
+## Structure and NAs
+```{r}
+summary(florida_stranding)
+```
+
+```{r}
+glimpse(florida_stranding)
+```
+
+```{r}
+florida_stranding %>% 
+  naniar::miss_var_summary()
+```
