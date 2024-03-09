@@ -14,6 +14,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library("tidyverse")
 library("janitor")
 library("naniar")
+library(ggplot2)
+library(ggmap)
+library(RColorBrewer)
 ```
 
 ## Load the data
@@ -34,24 +37,16 @@ glimpse(florida_stranding)
 florida_stranding %>% 
   naniar::miss_var_summary()
 ```
-# Change x and y to long and lat
+### Change x and y to long and lat
 ```{r}
 florida_stranding <- florida_stranding %>% 
   rename(longitude = x, latitude = y)
 ```
 
-
-## Build a map
-
-# Install and load the `ggmap` package  
-```{r message=FALSE, warning=FALSE}
-#install.packages("ggmap")
-library(ggmap)
-```
-
-#API Key
+## Where are the sea turtle strandings by species?
+### Build a map
 ```{r}
-register_stadiamaps("cf7e4fa6-eb1a-4afb-a4a8-6d5d47e2a05a", write = FALSE)
+register_stadiamaps("cf7e4fa6-eb1a-4afb-a4a8-6d5d47e2a05a", write = FALSE) #API Key
 ```
 
 ```{r}
@@ -72,7 +67,85 @@ map_florida <- get_stadiamap(bbox_florida, maptype = "stamen_terrain", zoom=7)
 ```
 
 ```{r}
+green_palette <- RColorBrewer::brewer.pal(7, "PRGn")
+
 ggmap(map_florida) + 
-  geom_point(data = florida_stranding, aes(longitude, latitude, color = commonname), size=0.3) +
-  labs(x= "Longitude", y= "Latitude", title="Sea Turtle Stranding Locations in Florida by Species")
+  geom_point(data = florida_stranding, aes(longitude, latitude, color = commonname), 
+             size = 0.5) +
+  scale_color_manual(values = setNames(green_palette, levels(florida_stranding$commonname))) +
+  labs(x = "Longitude", y = "Latitude", title = "Sea Turtle Stranding Locations in Florida by Species")
 ```
+## What are the total counts of sea turtle strandings in the data?
+```{r}
+florida_stranding %>% 
+  group_by(commonname) %>% 
+  count(commonname) %>% 
+  arrange(desc(n))
+```
+```{r}
+florida_stranding %>% 
+  count(commonname) %>%
+  ggplot(aes(x = reorder(commonname, -n), y = n, fill = commonname)) +
+  geom_col(alpha = 0.7) +
+  geom_text(aes(label = n), vjust = -0.5, color = "grey43", size = 3) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1),
+        plot.title = element_text(size = rel(1), hjust = 0.5)) +
+  labs(title = "Total Number of Sea Turtle Strandings by Species in Florida Through the Years",
+       y = "Number of Strandings",
+       x = "Species") +
+  scale_fill_manual(values = rep("darkgreen", n_distinct(florida_stranding$commonname)))+
+  guides(fill = FALSE)
+```
+## How has the number of sea turtle in Florida changed throughout the years?
+```{r}
+florida_stranding %>% 
+  mutate(year = as.factor(year),
+         alternating_color = ifelse(as.numeric(year) %% 2 == 0, "#006E2E", "#57BB8A")) %>% 
+  ggplot(aes(x = year, fill = alternating_color)) +
+  geom_bar(alpha = 0.7) +
+  scale_fill_manual(values = c("#006E2E", "#57BB8A")) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1),
+        plot.title = element_text(size = rel(1), hjust = 0.5)) +
+  labs(title = "Number of Sea Turtle Strandings by Year in Florida (1980-2022)",
+       y = "Number of Strandings") +
+  guides(fill = FALSE)
+```
+
+
+## Is there a specific month where different species of sea turtles are more likely to get stranded?
+```{r}
+florida_stranding %>% 
+  ggplot(aes(x=month))+
+  geom_bar(fill="#C3B1E1", alpha=0.9)+
+  facet_wrap(~commonname)+ 
+  theme(axis.text.x = element_text(angle = 60, hjust=1),
+        plot.title=element_text(size=rel(1), hjust = 0.5))+
+  labs(title="Number of Sea Turtle Strandings by Species in Each Month in Florida",
+       y="Number of Strandings",
+       x="Month")+
+  scale_x_discrete(limits=c("1","2","3", "4", "5", "6", "7", "8", "9", "10", "11", "12"))
+```
+
+## How does the condition of sea turtle stranding compare between green turtle and loggerhead? 
+```{r}
+green_palette <- c("#D3FCC3", "#57BB8A")
+
+florida_stranding %>% 
+  filter(commonname %in% c("Green turtle", "Loggerhead")) %>% 
+  filter(condition != "NULL") %>% 
+  group_by(commonname, condition) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = condition, y = count, fill = commonname)) + 
+  geom_col(position = "dodge", alpha = 0.8) +
+  geom_text(aes(label = count), position = position_dodge(width = 0.8), vjust = -0.5, color = "grey43", size = 3) +
+  scale_fill_manual(values = setNames(green_palette, c("Green turtle", "Loggerhead"))) + 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1),
+        plot.title = element_text(size = rel(1), hjust = 0.5)) +
+  labs(title = "Strandings Condition of Green Turtle and Loggerhead in Florida",
+       y = "Number of Strandings",
+       x = "Condition",
+       fill = "Species")
+```
+
+
+
