@@ -21,27 +21,33 @@ library("dplyr")
 ```{r}
 loggerheads <- read_csv("data/Adult_loggerhead_turtle.csv") %>% clean_names()
 ```
+
 ```{r}
 names(loggerheads)
 ```
 # Graph of Average Growth over Time Per State
 ```{r}
 loggerheads %>%
-  group_by(state) %>% # first get list of states in data
-  summarise(mean_state = mean(state))
+  count(state) # first get list of states in data
 ```
 ```{r}
-
+loggerheads <- loggerheads %>% # combine FL values into one
+  mutate(state = case_when(
+    state %in% c("FL", "FL(FA)", "FL (FA)") ~ "FL",
+    TRUE ~ state
+  ))
 ```
 
 ```{r}
-loggerheads$year <- as.factor(loggerheads$year)
-
-# Creating a line plot of average growth over time for all states
-loggerheads %>%
-  filter(!is.na(growth)) %>%
+loggerheads_long <- loggerheads %>%
+  select(state, year, growth) %>%
   group_by(state, year) %>%
-  summarise(mean_growth = mean(growth, na.rm = TRUE)) %>%
+  summarize(mean_growth = mean(growth, na.rm = T))
+```
+
+```{r}
+# Creating a line plot of average growth over time for all states
+loggerheads_long %>%
   ggplot(aes(x = year, y = mean_growth, color = state)) +
   geom_line() +
   labs(title = "Mean Growth for Each State Over the Years",
@@ -50,11 +56,65 @@ loggerheads %>%
 ```
 # Do males or females tend to grow more over time? (Removing unknowns)
 ```{r}
-
+loggerheads %>%
+  select(sex, year, growth) %>%
+  filter(sex!="NA") %>%
+  filter(sex!="unknown") %>%
+  group_by(sex, year) %>%
+  summarize(mean_growth = mean(growth, na.rm = T)) %>%
+  ggplot(aes(x = year, y = mean_growth, color = sex)) +
+  geom_line() +
+  labs(title = "Mean Growth for Each Sex Over the Years",
+       x = "Year", y = "Mean Growth Rate") +
+  theme_minimal()
 ```
-# Which state has the highest growth rate over time?
+
+# Is there a correlation between age and size?
 ```{r}
-
+loggerheads %>%
+  select(sex, growth) %>%
+  filter(sex!="unknown") %>%
+  group_by(sex) %>%
+  summarise(mean_growth = mean(growth, na.rm=T)) %>%
+  arrange(desc(mean_growth))
 ```
-# Make a map of loggerhead turtle distribution
+```{r}
+loggerheads %>%
+  filter(sex != "unknown") %>%
+  ggplot(aes(x = sex, y = growth)) +
+  geom_boxplot() +
+  scale_y_log10() +  # Adding logarithmic scale
+  labs(title = "Boxplot of Logarithmic Growth by Sex",
+       x = "Sex",
+       y = "Logarithmic Growth") +
+  theme_minimal()
+```
+
+# What about age and growth for males versus females?
+```{r}
+loggerheads %>%
+  select(sex, age, growth) %>%
+  filter(sex!="NA") %>%
+  filter(sex!="unknown") %>%
+  group_by(sex, age) %>%
+  summarize(mean_growth = mean(growth, na.rm = T)) %>%
+  ggplot(aes(x = age, y = mean_growth, color = sex)) +
+  geom_line() +
+  labs(title = "Mean Growth for Each Sex with Age",
+       x = "Age", y = "Mean Growth") +
+  theme_minimal()
+```
+
+# Make a shinyapp of loggerhead turtle distribution?
+```{r}
+library(shiny)
+library(shinydashboard)
+```
+
+```{r}
+loggerheads %>%
+  count(state) # first get list of states in data
+```
+
+
 
