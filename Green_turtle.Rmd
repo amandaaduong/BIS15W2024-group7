@@ -1,5 +1,6 @@
 ---
 title: "Green sea turtle analysis "
+author: "Ketong Zhang"
 output: html_document
 date: "2024-03-07"
 ---
@@ -40,13 +41,14 @@ green_turtle %>%
 ```
 
 produce a graph on the difference in straightline carapace length between male and female
+female turtles are larger than male turtles 
 ```{r}
 green_turtle %>%
   group_by(sex) %>%
   filter(straightline_carapace_length != "NA") %>% 
   summarize(avg_length = mean(straightline_carapace_length)) %>%
   ggplot(aes(x = sex, y = avg_length, fill = sex)) +
-  geom_col(color = "black", fill = "darkgreen") +
+  geom_col(color = "black", fill = "lightgreen") +
   theme_light()+
   labs(title = "Average Straightline Carapace Length by Sex",
        x = "Sex",
@@ -54,10 +56,16 @@ green_turtle %>%
        fill = "Sex")
 ```
 
-compare group rate by year
+compare growth rate by year
+based on the result, you can see there is an overall negative correlation
+
 ```{r}
 green_turtle %>% 
-  group_by(year) %>% 
+  group_by(age) %>% 
+  summarize(avg_growth = mean(growth_rate, na.rm = TRUE)) %>% 
+  ggplot(aes(x = age, y = avg_growth))+
+  geom_point()+
+  geom_smooth(method = lm)
   
 ```
 
