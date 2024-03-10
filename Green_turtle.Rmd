@@ -101,10 +101,23 @@ green_turtle %>%
   count(year) %>% 
   arrange(desc(n)) %>% 
   ggplot(aes(x = year, y = n))+
-  geom_col(position = "dodge", fill = "rosybrown2")+
-  labs(title = "Top 5 years",
+  geom_col(position = "dodge", fill = "palegreen3")+
+  labs(title = "Top 5 years of green turtle stranding",
        x = "Years",
        y = "Number of stranding")+
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))+
   scale_x_discrete()
 ```
 range / boxplot on the range of length by sex
+```{r}
+green_turtle %>% 
+  group_by(sex) %>% 
+  ggplot(aes(x = sex, y = straightline_carapace_length))+
+  geom_boxplot(fill = "lightblue3")+
+  labs(title = "Range of straightline carapace length",
+       x = "Sex",
+       y = "Straightline carapace length")+
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
+```
+
+
