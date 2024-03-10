@@ -125,4 +125,11 @@ loggerheads %>%
        fill = "Sex") +
   theme(plot.title = element_text(size = rel(1.75), hjust = 0.5))
 ```
+# count number of females and males in data, removing unknowns
+```{r}
+loggerheads %>% 
+  group_by(sex) %>% 
+  filter(sex != "unknown") %>%
+  count(sex) 
+```
 
