@@ -137,7 +137,7 @@ florida_stranding %>%
   summarise(count = n()) %>%
   ggplot(aes(x = condition, y = count, fill = commonname)) + 
   geom_col(position = "dodge", alpha = 0.8) +
-  geom_text(aes(label = count), position = position_dodge(width = 0.8), vjust = -0.5, color = "grey43", size = 3) +
+  geom_text(aes(label = count), position = position_dodge(width = 0.8), vjust = -0.5, color = "grey43", size = 2.5) +
   scale_fill_manual(values = setNames(green_palette, c("Green turtle", "Loggerhead"))) + 
   theme(axis.text.x = element_text(angle = 60, hjust = 1),
         plot.title = element_text(size = rel(1), hjust = 0.5)) +
