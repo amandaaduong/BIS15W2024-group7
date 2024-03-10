@@ -2,7 +2,7 @@
 title: "Green sea turtle analysis "
 author: "Ketong Zhang"
 output: html_document
-date: "2024-03-07"
+date: "2024-03-09"
 ---
 
 ```{r setup, include=FALSE}
@@ -48,24 +48,63 @@ green_turtle %>%
   filter(straightline_carapace_length != "NA") %>% 
   summarize(avg_length = mean(straightline_carapace_length)) %>%
   ggplot(aes(x = sex, y = avg_length, fill = sex)) +
-  geom_col(color = "black", fill = "lightgreen") +
+  geom_col(color = "black", fill = "lightskyblue3") +
   theme_light()+
   labs(title = "Average Straightline Carapace Length by Sex",
        x = "Sex",
        y = "Average Length",
-       fill = "Sex")
+       fill = "Sex")+
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
 compare growth rate by year
 based on the result, you can see there is an overall negative correlation
-
+there is an exponential growth between age 5 to 12, and follow by decrease in growth rate after the age of 12
 ```{r}
 green_turtle %>% 
   group_by(age) %>% 
   summarize(avg_growth = mean(growth_rate, na.rm = TRUE)) %>% 
-  ggplot(aes(x = age, y = avg_growth))+
+  ggplot(aes(x = age, y = avg_growth, color = age))+
   geom_point()+
-  geom_smooth(method = lm)
-  
+  labs(title = "Growth rate by year",
+       x = "Age of turtle",
+       y = "Average growth rate",
+       fill = "Age")+
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
+the most "popular" age of stranded turtle
+female = 8
+male = 7
+```{r}
+green_turtle %>% 
+  group_by(sex) %>% 
+  count(age) %>% 
+  arrange(desc(n)) %>% 
+  ggplot(aes(x = age, y = n))+
+  geom_col(position = "dodge", alpha = 0.9, fill = "olivedrab3", color = "salmon4")+
+  geom_text(aes(label = age), vjust = -0.5, color = "black", size = 2)+
+  facet_wrap(~sex)+
+  labs(title = "Turtle stranding ages",
+       x = "Turtle's age",
+       y = "Number of stranding",
+       fill = "Sex")+
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))+
+  scale_x_discrete()
+```
+
+the most popular year of stranding
+(top 5 year of stranding)
+scale the year to discrete
+```{r}
+green_turtle %>% 
+  count(year) %>% 
+  arrange(desc(n)) %>% 
+  ggplot(aes(x = year, y = n))+
+  geom_col(position = "dodge", fill = "rosybrown2")+
+  labs(title = "Top 5 years",
+       x = "Years",
+       y = "Number of stranding")+
+  scale_x_discrete()
+```
+range / boxplot on the range of length by sex
