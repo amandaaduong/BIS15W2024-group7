@@ -17,16 +17,6 @@ library(dplyr)
 library(naniar)
 ```
 
-```{r}
-install.packages("ggmap")
-library(ggmap)
-```
-
-stadium map
-```{r}
-register_stadiamaps("311578bf-a7b3-4a46-955f-50b1b0fe5edc", write = FALSE)
-```
-
 load the csv file
 ```{r}
 seamap <- read_csv("data/obis_seamap_swot_65e0e9344b011_20240229_153235_site_locations_csv.csv") %>% clean_names()
@@ -36,19 +26,49 @@ overview the data
 glimpse(seamap)
 ```
 
+countries that sea turtles located / appear the most
+australia is the top 1
+make sense because the oceans and beaches located in australia
 ```{r}
 seamap %>% 
-  select(latitude, longitude) %>% 
-  summary()
+  filter(country != "NA") %>% 
+  count(country) %>% 
+  arrange(desc(n)) %>% 
+  head(5) %>% 
+  ggplot(aes(x = reorder(country,n), y=n))+
+  geom_col(position = "dodge", fill = "lightgoldenrod")+
+  coord_flip()+
+  labs(title = "Top 5 countries",
+       x = "Country",
+       y = NULL)+
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
+the nesting status
 ```{r}
-longitude <- c(-179.684, 179.613)
-latitude <- c(-29.481, 43.267)
-sea_bbox <- make_bbox(longitude,latitude, f=0.03)
+seamap %>% 
+  filter(nesting_status != "NA") %>% 
+  count(nesting_status) %>% 
+  ggplot(aes(x = nesting_status, y=n))+
+  geom_col(fill = "darkolivegreen3")+
+  labs(title = "Nesting status",
+       x = NULL,
+       y = NULL)+
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
+
+```
+the most commonly occur turtle species
+```{r}
+seamap %>%
+  filter(!is.na(species)) %>%
+  count(species, nesting_status) %>%
+  ggplot(aes(x = nesting_status, y = n)) +
+  geom_col(fill = "lightgreen") +
+  facet_wrap(~ species, nrow = 3) +
+  labs(title = "Nesting Status comparison by turtle species",
+       x = "Nesting status",
+       y = NULL)+
+  theme(axis.text.x = element_text(angle = 50, hjust = 1)) +
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
-load a map
-```{r}
-map1 <- get_stadiamap(sea_bbox, maptype = "stamen_terrain", zoom = 5)
-```
 
