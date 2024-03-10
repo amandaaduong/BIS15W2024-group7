@@ -11,10 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 load all the necessary packages
 ```{r}
-library(tidyverse)
-library(janitor)
-library(dplyr)
-library(naniar)
+m
 ```
 
 load the dataset and clean names

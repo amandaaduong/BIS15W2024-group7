@@ -1,0 +1,54 @@
+---
+title: "Sea map"
+author: "Ketong Zhang"
+date: "2024-03-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+load the packages
+```{r}
+library(tidyverse)
+library(janitor)
+library(dplyr)
+library(naniar)
+```
+
+```{r}
+install.packages("ggmap")
+library(ggmap)
+```
+
+stadium map
+```{r}
+register_stadiamaps("311578bf-a7b3-4a46-955f-50b1b0fe5edc", write = FALSE)
+```
+
+load the csv file
+```{r}
+seamap <- read_csv("data/obis_seamap_swot_65e0e9344b011_20240229_153235_site_locations_csv.csv") %>% clean_names()
+```
+overview the data
+```{r}
+glimpse(seamap)
+```
+
+```{r}
+seamap %>% 
+  select(latitude, longitude) %>% 
+  summary()
+```
+```{r}
+longitude <- c(-179.684, 179.613)
+latitude <- c(-29.481, 43.267)
+sea_bbox <- make_bbox(longitude,latitude, f=0.03)
+```
+
+load a map
+```{r}
+map1 <- get_stadiamap(sea_bbox, maptype = "stamen_terrain", zoom = 5)
+```
+
