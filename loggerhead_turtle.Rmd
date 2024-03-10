@@ -55,7 +55,7 @@ loggerheads_long %>%
        x = "Year", y = "Mean Growth Rate") +
   theme_minimal()
 ```
-# Do males or females tend to grow more over time? (Removing unknowns)
+# Do males or females tend to grow faster over time? (Removing unknowns)
 ```{r}
 loggerheads %>%
   select(sex, year, growth) %>%
@@ -70,7 +70,7 @@ loggerheads %>%
   theme_minimal()
 ```
 
-# Is there a correlation between age and size?
+# Is there a correlation between age and growth rate?
 ```{r}
 loggerheads %>%
   select(sex, growth) %>%
@@ -91,8 +91,9 @@ loggerheads %>%
        y = "Logarithmic Growth") +
   theme_minimal()
 ```
+# Females tend to grow in size faster than males. 
 
-# What about age and growth for males versus females?
+# At what age do males or females tend to grow the fastest?
 ```{r}
 loggerheads %>%
   select(sex, age, growth) %>%
@@ -102,7 +103,7 @@ loggerheads %>%
   summarize(mean_growth = mean(growth, na.rm = T)) %>%
   ggplot(aes(x = age, y = mean_growth, color = sex)) +
   geom_line() +
-  labs(title = "Mean Growth for Each Sex with Age",
+  labs(title = "Mean Growth Rate for Each Sex with Age",
        x = "Age", y = "Mean Growth") +
   theme_minimal()
 ```
@@ -124,5 +125,12 @@ loggerheads %>%
        y = "Count",
        fill = "Sex") +
   theme(plot.title = element_text(size = rel(1.75), hjust = 0.5))
+```
+# count number of females and males in data, removing unknowns
+```{r}
+loggerheads %>% 
+  group_by(sex) %>% 
+  filter(sex != "unknown") %>%
+  count(sex) 
 ```
 
