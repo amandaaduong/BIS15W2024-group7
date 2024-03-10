@@ -147,5 +147,18 @@ florida_stranding %>%
        fill = "Species")
 ```
 
+```{r}
+florida_stranding %>% 
+  filter(commonname=="Green turtle" | commonname=="Loggerhead") %>% 
+  ggplot(aes(x=month))+
+  geom_bar(fill="#C3B1E1", alpha=0.9)+
+  facet_wrap(~commonname)+ 
+  theme(axis.text.x = element_text(angle=30,hjust=1),
+        plot.title=element_text(size=rel(1), hjust = 0.5))+
+  labs(title="Number of Strandings of Green Turtle and Loggerhead by Month in Florida",
+       y="Number of Strandings",
+       x="Month")+
+  scale_x_discrete(limits=c("1","2","3", "4", "5", "6", "7", "8", "9", "10", "11", "12"))
+```
 
 
