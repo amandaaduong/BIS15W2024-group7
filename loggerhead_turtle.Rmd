@@ -79,7 +79,7 @@ loggerheads %>%
   summarise(mean_growth = mean(growth, na.rm=T)) %>%
   arrange(desc(mean_growth))
 ```
-
+# add color to boxplot
 ```{r}
 loggerheads %>%
   filter(sex != "unknown") %>%
@@ -107,16 +107,22 @@ loggerheads %>%
   theme_minimal()
 ```
 
-# Make a shinyapp of loggerhead turtle distribution?
+# show popular ages of males and females in data
 ```{r}
-library(shiny)
-library(shinydashboard)
+loggerheads %>% 
+  group_by(sex) %>% 
+  filter(sex != "unknown") %>%
+  count(age) %>% 
+  arrange(desc(n)) %>% 
+  ggplot(aes(x = age, y = n)) +
+  geom_col(position = "dodge", alpha = 0.5, fill = "pink", color = "plum") +
+  geom_text(data = . %>% slice_max(n, with_ties = FALSE), aes(label = age),
+            position = position_dodge(width = 0.9), vjust = -0.5, color = "black", size = 2) +
+  facet_wrap(~sex) +
+  labs(title = "Turtle Ages by Sex",
+       x = "Age",
+       y = "Count",
+       fill = "Sex") +
+  theme(plot.title = element_text(size = rel(1.75), hjust = 0.5))
 ```
-
-```{r}
-loggerheads %>%
-  count(state) # first get list of states in data
-```
-
-
 
