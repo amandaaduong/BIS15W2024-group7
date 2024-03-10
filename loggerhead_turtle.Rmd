@@ -30,6 +30,7 @@ names(loggerheads)
 loggerheads %>%
   count(state) # first get list of states in data
 ```
+
 ```{r}
 loggerheads <- loggerheads %>% # combine FL values into one
   mutate(state = case_when(
@@ -78,6 +79,7 @@ loggerheads %>%
   summarise(mean_growth = mean(growth, na.rm=T)) %>%
   arrange(desc(mean_growth))
 ```
+
 ```{r}
 loggerheads %>%
   filter(sex != "unknown") %>%
