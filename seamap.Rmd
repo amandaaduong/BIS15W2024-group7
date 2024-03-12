@@ -26,9 +26,8 @@ overview the data
 glimpse(seamap)
 ```
 
-countries that sea turtles located / appear the most
-australia is the top 1
-make sense because the oceans and beaches located in australia
+# Countries with the most sea turtle sightings
+Australia has the most sea turtle sightings which makes sense because of the oceans and beaches located in Australia as well as ocean temperature.
 ```{r}
 seamap %>% 
   filter(country != "NA") %>% 

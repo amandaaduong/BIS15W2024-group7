@@ -2,6 +2,8 @@
 
 This repository is for Group 7 for BIS015_W2024. (Ketong Zhang, Jasmine Hsiao, Amanda Duong)
 
+Our project is about sea turtles, globally and nationally, with an emphasis on loggerhead and green sea turtles. 
+
 This repository includes:
 - The "data" folder, which contains all of the raw data for the project.
 - The "project rubrics" folder which contains the project evaluation and rubric. 
