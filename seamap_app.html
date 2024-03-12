@@ -383,7 +383,7 @@ library(readr)</code></pre>
 <h2>The App</h2>
 <pre class="r"><code>#register_stadiamaps(&quot;cf7e4fa6-eb1a-4afb-a4a8-6d5d47e2a05a&quot;, write = FALSE)</code></pre>
 <pre class="r"><code>ui &lt;- dashboardPage(
-  dashboardHeader(title = &quot;Sea Turtle Biogeography-Nesting Sites&quot;, titleWidth = 400),
+  dashboardHeader(title = &quot;Sea Turtle Biogeography - Nesting Sites&quot;, titleWidth = 400),
   dashboardSidebar(
     selectInput(&quot;country&quot;, &quot;Select Country:&quot;, choices = unique(seamap$country), selected = &quot;Australia&quot;)
   ),
@@ -396,7 +396,7 @@ server &lt;- function(input, output) {
   filtered_data &lt;- reactive({
     filter(seamap, country == input$country)
   })
-
+  
   output$map &lt;- renderLeaflet({
     center_lat &lt;- mean(filtered_data()$latitude)
     center_lon &lt;- mean(filtered_data()$longitude)
@@ -407,7 +407,10 @@ server &lt;- function(input, output) {
       setView(lng = center_lon, lat = center_lat, zoom = 4) %&gt;%
       addMarkers(data = filtered_data(),
                  lng = ~longitude, lat = ~latitude,
-                 popup = ~paste(&quot;Location: &quot;, country))
+                 popup = ~paste(&quot;Species (Common Name): &quot;, common_name, &quot;&lt;br&gt;&quot;,
+                                &quot;Site Name: &quot;, site_name, &quot;&lt;br&gt;&quot;,
+                                &quot;Nesting Status : &quot;, nesting_status, &quot;&lt;br&gt;&quot;,
+                                &quot;Year(s) Monitored: &quot;, years_monitored))
   })
 }
 
