@@ -49,25 +49,26 @@ florida_stranding <- florida_stranding %>%
 register_stadiamaps("cf7e4fa6-eb1a-4afb-a4a8-6d5d47e2a05a", write = FALSE) #API Key
 ```
 
+### Find the Min and Max of Lat and Long
 ```{r}
 florida_stranding %>% 
-  #y=latitude, x=longitude
   select(longitude, latitude) %>% 
   summary()
 ```
-
+# Set boundaries
 ```{r}
 lat_florida <- c(24.23, 30.72)
 long_florida <- c(-87.52, -79.49)
 bbox_florida <- make_bbox(long_florida, lat_florida, f = 0.03) #f is the fraction of the bounding box to add to the range
 ```
 
+# Get the map
 ```{r}
 map_florida <- get_stadiamap(bbox_florida, maptype = "stamen_terrain", zoom=7)
 ```
 
 ```{r}
-green_palette <- RColorBrewer::brewer.pal(7, "PRGn")
+green_palette <- RColorBrewer::brewer.pal(7, "PRGn") #Color palette for points
 
 ggmap(map_florida) + 
   geom_point(data = florida_stranding, aes(longitude, latitude, color = commonname), 
@@ -90,13 +91,14 @@ florida_stranding %>%
   geom_text(aes(label = n), vjust = -0.5, color = "grey43", size = 3) +
   theme(axis.text.x = element_text(angle = 60, hjust = 1),
         plot.title = element_text(size = rel(1), hjust = 0.5)) +
-  labs(title = "Total Number of Sea Turtle Strandings by Species in Florida Through the Years",
+  labs(title = "Total Number of Sea Turtle Strandings by Species in Florida Through the Years by Species",
        y = "Number of Strandings",
        x = "Species") +
   scale_fill_manual(values = rep("darkgreen", n_distinct(florida_stranding$commonname)))+
   guides(fill = FALSE)
 ```
 ## How has the number of sea turtle in Florida changed throughout the years?
+# Shows an upward trend
 ```{r}
 florida_stranding %>% 
   mutate(year = as.factor(year),
