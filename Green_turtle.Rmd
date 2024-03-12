@@ -110,7 +110,7 @@ green_turtle %>%
 # range / boxplot on the range of length by sex
 ```{r}
 green_turtle %>% 
-  group_by(sex) %>% 
+  group_by(sex) %>% # group by sex
   ggplot(aes(x = sex, y = straightline_carapace_length))+
   geom_boxplot(fill = "lightblue3")+
   labs(title = "Range of straightline carapace length",
@@ -121,13 +121,13 @@ green_turtle %>%
 
 ```{r}
 green_turtle %>% 
-  filter(sex == "Male") %>% 
+  filter(sex == "Male") %>% # filter by sex
   summary(straightline_carapace_length)
 ```
 
 ```{r}
 green_turtle %>% 
-  filter(sex == "Female") %>% 
+  filter(sex == "Female") %>% # filter by sex
   summary(straightline_carapace_length)
 ```
 
