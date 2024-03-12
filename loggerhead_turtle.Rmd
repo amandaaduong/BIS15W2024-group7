@@ -21,10 +21,15 @@ library("dplyr")
 ```{r}
 loggerheads <- read_csv("data/Adult_loggerhead_turtle.csv") %>% clean_names()
 ```
-
+# look at column names
 ```{r}
 names(loggerheads)
 ```
+# look at summary of data
+```{r}
+glimpse(loggerheads)
+```
+
 # Graph of Average Growth over Time Per State
 ```{r}
 loggerheads %>%
