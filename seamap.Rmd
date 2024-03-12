@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-load the packages
+# load the packages
 ```{r}
 library(tidyverse)
 library(janitor)
@@ -17,11 +17,11 @@ library(dplyr)
 library(naniar)
 ```
 
-load the csv file
+# Load the csv file
 ```{r}
 seamap <- read_csv("data/obis_seamap_swot_65e0e9344b011_20240229_153235_site_locations_csv.csv") %>% clean_names()
 ```
-overview the data
+# Get a summary of the data
 ```{r}
 glimpse(seamap)
 ```
@@ -42,7 +42,8 @@ seamap %>%
        y = NULL)+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
-the nesting status
+# What is the nesting status like in the data? 
+# Quantified = able to be measured, unquantified = unsure/not fully measured, no nesting = no nest observed/measured overall
 ```{r}
 seamap %>% 
   filter(nesting_status != "NA") %>% 
@@ -55,7 +56,7 @@ seamap %>%
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 
 ```
-the most commonly occur turtle species
+# What does the nesting status look like for each turtle species?
 ```{r}
 seamap %>%
   filter(!is.na(species)) %>%
@@ -70,7 +71,7 @@ seamap %>%
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
-most frequently appear species
+# What species is seen the most in the data globally?
 ```{r}
 seamap %>% 
   filter(species!="NA") %>% 
