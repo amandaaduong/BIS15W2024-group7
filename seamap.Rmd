@@ -71,21 +71,34 @@ seamap %>%
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
-most frequently appear species
+most frequently appear endangered species
 ```{r}
 seamap %>% 
-  filter(species!="NA") %>% 
-  count(species) %>% 
+  filter(common_name!="NA") %>% 
+  count(common_name) %>% 
   arrange(desc(n)) %>% 
-  ggplot(aes(x = reorder(species, n), y=n, fill=species))+
+  ggplot(aes(x = reorder(common_name, n), y=n, fill=common_name))+
   geom_col(fill = "lavender")+
   coord_flip()+
   theme_light()+
-  labs(title = "Most frequently occur turtle species",
+  labs(title = "Most frequently occur endangered turtle species",
        x = "Species",
        y = NULL)+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))+
   scale_x_discrete()
 ```
 
+```{r}
+seamap %>%
+  filter(!is.na(common_name)) %>%
+  count(common_name, nesting_status) %>%
+  ggplot(aes(x = nesting_status, y = n)) +
+  geom_col(fill = "lightgreen") +
+  facet_wrap(~common_name, nrow = 3) +
+  labs(title = "Nesting status comparison by turtle species",
+       x = "Nesting status",
+       y = NULL)+
+  theme(axis.text.x = element_text(angle = 50, hjust = 1)) +
+  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
+```
 
