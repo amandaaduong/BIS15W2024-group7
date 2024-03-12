@@ -1,7 +1,7 @@
 ---
 title: "Sea map"
 author: "Ketong Zhang"
-date: "2024-03-10"
+date: "2024-03-12"
 output: html_document
 ---
 
@@ -9,7 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-load the packages
+**load the packages**
 ```{r}
 library(tidyverse)
 library(janitor)
@@ -17,16 +17,16 @@ library(dplyr)
 library(naniar)
 ```
 
-load the csv file
+**load the csv file**
 ```{r}
 seamap <- read_csv("data/obis_seamap_swot_65e0e9344b011_20240229_153235_site_locations_csv.csv") %>% clean_names()
 ```
-overview the data
+**overview the data**
 ```{r}
 glimpse(seamap)
 ```
 
-countries that sea turtles located / appear the most
+**countries that sea turtles located / appear the most**
 australia is the top 1
 make sense because the oceans and beaches located in australia
 ```{r}
@@ -43,7 +43,8 @@ seamap %>%
        y = NULL)+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
-the nesting status
+
+**the nesting status**
 ```{r}
 seamap %>% 
   filter(nesting_status != "NA") %>% 
@@ -56,7 +57,8 @@ seamap %>%
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 
 ```
-the most commonly occur turtle species
+
+**the most commonly occur turtle species (by scientific name)**
 ```{r}
 seamap %>%
   filter(!is.na(species)) %>%
@@ -64,16 +66,17 @@ seamap %>%
   ggplot(aes(x = nesting_status, y = n)) +
   geom_col(fill = "lightgreen") +
   facet_wrap(~ species, nrow = 3) +
-  labs(title = "Nesting Status comparison by turtle species",
+  labs(title = "Nesting Status Comparison by Turtle Species",
        x = "Nesting status",
        y = NULL)+
   theme(axis.text.x = element_text(angle = 50, hjust = 1)) +
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
-most frequently appear endangered species
+**most frequently appear endangered species**
 ```{r}
 seamap %>% 
+  #filter(years_monitored == 2019) %>% 
   filter(common_name!="NA") %>% 
   count(common_name) %>% 
   arrange(desc(n)) %>% 
@@ -81,13 +84,13 @@ seamap %>%
   geom_col(fill = "lavender")+
   coord_flip()+
   theme_light()+
-  labs(title = "Most frequently occur endangered turtle species",
+  labs(title = "Most frequently occur endangered turtle species in 2019",
        x = "Species",
        y = NULL)+
-  theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))+
+  theme(plot.title=element_text(size=rel(1.5), hjust = 0.5))+
   scale_x_discrete()
 ```
-
+**updated version of nesting status by common name**
 ```{r}
 seamap %>%
   filter(!is.na(common_name)) %>%
@@ -95,10 +98,11 @@ seamap %>%
   ggplot(aes(x = nesting_status, y = n)) +
   geom_col(fill = "lightgreen") +
   facet_wrap(~common_name, nrow = 3) +
-  labs(title = "Nesting status comparison by turtle species",
+  labs(title = "Nesting Status Comparison by Turtle Species",
        x = "Nesting status",
        y = NULL)+
   theme(axis.text.x = element_text(angle = 50, hjust = 1)) +
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
+
 

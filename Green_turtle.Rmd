@@ -16,22 +16,22 @@ library(dplyr)
 library(naniar)
 ```
 
-load the dataset and clean names
+**load the dataset and clean names**
 ```{r}
 green_turtle <- read_csv("data/Green_sea_turtle_age_growth.csv") %>% clean_names()
 ```
 
-take a look at the dataset
+**take a look at the dataset**
 ```{r}
 glimpse(green_turtle)
 ```
 
-check if there are any NAs
+**check if there are any NAs**
 ```{r}
 miss_var_summary(green_turtle)
 ```
 
-produce a summary of average straightline carapace length of turtle 
+**produce a summary of average straightline carapace length of turtle**
 ```{r}
 green_turtle %>% 
   group_by(sex) %>% 
@@ -39,7 +39,8 @@ green_turtle %>%
   summarize((avg_length = mean(straightline_carapace_length)))
 ```
 
-produce a graph on the difference in straightline carapace length between male and female
+**produce a graph on the difference in straightline carapace length between male and female**
+
 female turtles are larger than male turtles 
 ```{r}
 green_turtle %>%
@@ -56,25 +57,26 @@ green_turtle %>%
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
-compare growth rate by year
+**compare growth rate by year**
 based on the result, you can see there is an overall negative correlation
-there is an exponential growth between age 5 to 12, and follow by decrease in growth rate after the age of 12
+there is a growth between age 5 to 12, and follow by decrease in growth rate after the age of 12
 ```{r}
 green_turtle %>% 
   group_by(age) %>% 
   summarize(avg_growth = mean(growth_rate, na.rm = TRUE)) %>% 
   ggplot(aes(x = age, y = avg_growth, color = age))+
-  geom_point()+
-  labs(title = "Growth rate by age",
+  geom_line()+
+  labs(title = "Growth Rate by Age",
        x = "Age of turtle",
        y = "Average growth rate",
        fill = "Age")+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
 ```
 
-the most "popular" age of stranded turtle
+**the most "popular" age of stranded turtle**
 female = 8
 male = 7
+reason: around 7-8, the juvenile stage of turtles are likely to be more active, therefore increase the stranding possibilities
 ```{r}
 green_turtle %>% 
   group_by(sex) %>% 
@@ -92,28 +94,29 @@ green_turtle %>%
   scale_x_discrete()
 ```
 
-the most popular year of stranding
+**the most popular year of stranding**
 (top 5 year of stranding)
 scale the year to discrete
 ```{r}
 green_turtle %>% 
   count(year) %>% 
   arrange(desc(n)) %>% 
-  ggplot(aes(x = year, y = n))+
-  geom_col(position = "dodge", fill = "palegreen3")+
-  labs(title = "Top 5 years of green turtle stranding",
+  ggplot(aes(x = as.factor(year), y = n))+
+  geom_col(fill = "palegreen3")+
+  labs(title = "Green Sea Turtle Stranding Trend Over The Years",
        x = "Years",
        y = "Number of stranding")+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))+
-  scale_x_discrete()
+  scale_x_discrete(limits=c("1998", "1999", "2000", "2001", "2002", "2003", "2004", "2005", "2006", "2007", "2008", "2009"))
 ```
-range / boxplot on the range of length by sex
+
+**range / boxplot on the range of length by sex**
 ```{r}
 green_turtle %>% 
   group_by(sex) %>% 
   ggplot(aes(x = sex, y = straightline_carapace_length))+
   geom_boxplot(fill = "lightblue3")+
-  labs(title = "Range of straightline carapace length",
+  labs(title = "Range of Straightline Carapace Length",
        x = "Sex",
        y = "Straightline carapace length")+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
