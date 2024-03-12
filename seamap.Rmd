@@ -37,7 +37,7 @@ seamap %>%
   ggplot(aes(x = reorder(country,n), y=n))+
   geom_col(position = "dodge", fill = "lightgoldenrod")+
   coord_flip()+
-  labs(title = "Top 5 countries",
+  labs(title = "Top 5 Countries",
        x = "Country",
        y = NULL)+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
@@ -50,7 +50,7 @@ seamap %>%
   count(nesting_status) %>% 
   ggplot(aes(x = nesting_status, y=n))+
   geom_col(fill = "darkolivegreen3")+
-  labs(title = "Nesting status",
+  labs(title = "Nesting Status",
        x = NULL,
        y = NULL)+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
@@ -64,8 +64,8 @@ seamap %>%
   ggplot(aes(x = nesting_status, y = n)) +
   geom_col(fill = "lightgreen") +
   facet_wrap(~ species, nrow = 3) +
-  labs(title = "Nesting Status comparison by turtle species",
-       x = "Nesting status",
+  labs(title = "Nesting Status Comparison by Turtle Species",
+       x = "Nesting Status",
        y = NULL)+
   theme(axis.text.x = element_text(angle = 50, hjust = 1)) +
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))
@@ -81,7 +81,7 @@ seamap %>%
   geom_col(fill = "lavender")+
   coord_flip()+
   theme_light()+
-  labs(title = "Most frequently occur turtle species",
+  labs(title = "Most Frequently Seen Turtle Species",
        x = "Species",
        y = NULL)+
   theme(plot.title=element_text(size=rel(1.75), hjust = 0.5))+
