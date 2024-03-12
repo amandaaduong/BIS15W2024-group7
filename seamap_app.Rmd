@@ -36,7 +36,7 @@ seamap <- read_csv("data/obis_seamap_swot_65e0e9344b011_20240229_153235_site_loc
 
 ```{r}
 ui <- dashboardPage(
-  dashboardHeader(title = "Sea Turtle Biogeography", titleWidth = 400),
+  dashboardHeader(title = "Sea Turtle Biogeography-Nesting Sites", titleWidth = 400),
   dashboardSidebar(
     selectInput("country", "Select Country:", choices = unique(seamap$country), selected = "Australia")
   ),
