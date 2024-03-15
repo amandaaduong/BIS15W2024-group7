@@ -149,6 +149,7 @@ florida_stranding %>%
        fill = "Species")
 ```
 
+## Which month has the highest strandings for the two species?
 ```{r}
 florida_stranding %>% 
   filter(commonname=="Green turtle" | commonname=="Loggerhead") %>% 
